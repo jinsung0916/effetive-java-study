@@ -3,6 +3,24 @@
 
 <br>
 
+### `try-with-resources` 란?
+~~~java
+InputStream in = new FileInputStream(src);
+try {
+    // do something
+} finally {
+    in.close();
+}
+
+try(InputStream in = new FileInputStream(src);) {
+    // do something
+}
+~~~
+
+<br>
+
+### `try-with-resources` 를 사용해야 하는 이유
+
 1. 코드가 단순해진다.
     ```java
     // before - 여러 개의 리소스를 처리해야 하는 경우 코드가 지저분해진다.
