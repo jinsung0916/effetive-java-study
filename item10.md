@@ -4,7 +4,7 @@
 <br>
 
 ### `equals()` 를 재정의 하지 말아야 하는 경우
-* `Object.equals()`로 해결되는 경우
+1. `Object.equals()`로 해결되는 경우
     ```java
     class Object {
         public boolean equals(Object obj) {
@@ -12,16 +12,17 @@
         }
     }
     ```
-    1. 개별 인스턴스가 본질적으로 고유한 경우
-    2. 인스턴스의 논리적 동치성(logical equality)을 검사할 일이 없는 경우.
-    3. 상위 클래스에서 재정의한 equals()가 하위 클래스에도 딱 들어 맞는 경우.
-    4. 클래스가 private이거나 package-private이고 equals() 메서드를 호출할 일이 없는 경우.
-        ```java
-        @Override
-        public boolean equals(Object o) {
-            throw new AssertionError();	//호출 금지!
-        }
-        ```
+    * 개별 인스턴스가 본질적으로 고유한 경우
+    * 인스턴스의 논리적 동치성(logical equality)을 검사할 일이 없는 경우.
+    
+2. 상위 클래스에서 재정의한 equals()가 하위 클래스에도 딱 들어 맞는 경우.
+3. 클래스가 private이거나 package-private이고 equals() 메서드를 호출할 일이 없는 경우.
+    ```java
+    @Override
+    public boolean equals(Object o) {
+        throw new AssertionError();	//호출 금지!
+    }
+    ```
 
 ### `equals()` 를 재정의 해야 하는 경우
 * `Object.equals()`로 해결되지 않는 경우, 주로 Value Object 에 해당된다. (String, Integer...)
