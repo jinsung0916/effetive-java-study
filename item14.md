@@ -102,7 +102,7 @@ class Comparators {
     }
     ```
 2. 기존 클래스를 확장한 구체 클래스에 새로운 컴포넌트를 추가했다면 compareTo 규약을 지킬 방법이 없다
-    (출처: https://javabom.tistory.com/10).
+
     ```java
     public class Point implements Comparable<Point> {
         protected Integer x;
