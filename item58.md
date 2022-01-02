@@ -1,6 +1,6 @@
-#Effective Java
+# Effective Java
 
-##전통적인 for 문 보다는 for-each 문을 사용하라(58)
+## 전통적인 for 문 보다는 for-each 문을 사용하라(58)
 
 > 가능한 모든 곳에서 for 문이 아닌 for-each 문을 사용하자(p.350).
 
