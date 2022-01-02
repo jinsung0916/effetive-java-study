@@ -29,7 +29,155 @@
 ### `equals()` 재정의 시 지켜야 할 규약
 * **반사성(relfexivity)** : null이 아닌 모든 참조 x에 대해, x.equals(x)는 true
 * **대칭성(symmetry)** : null이 아닌 모든 참조 x, y에 대해, x.equals(y)가 true면 y.equals(x)도 true다
+    ~~~java
+    public final class CaseInsensitiveString {
+        private final String;
+        
+        public CaseInsensitiveString(String s){
+            this.s = Objects.requireNonNull(s);
+        }
+        
+        @Override 
+        public boolean equals(Obejct o){
+            if( o instanceof CaseInsesitiveString){
+                return s.eqaulsIgnoreCase(
+                    ((CaseInsensitiveString) o).s);
+            if (o instanceof String)
+                return s.equalsIgnoreCase((String) o);
+            return false;
+                )
+            }
+        }
+    }
+    CaseInsenitiveString cis = new CaseInsensitiveString("Polish");
+    String s = "Polish";
+
+    System.out.println("cis.equals(s) = " + cis.equals(s)); //true
+    System.out.println("s.equals(cis) =" + s.equals(cis)); //false - 대칭성 위반!
+    ~~~
+    ~~~java
+    @Override
+    public boolean equals(Object o){
+        return o instanceof CaseInsensitiveString &&
+        ((CaseInsensitiveString) o).s.equalsIgnoreCase(s);
+    }
+    ~~~
 * **추이성(transitivity)** : null이 아닌 모든 참조 x,y,z에 대해 x.equals(y), y.equals(z)가 true라면, x.equals(z)도 true다
+    > 구체 클래스를 확장해 새로운 필드를 추가하면서 equals 규약을 만족시킬 방법은 존재하지 않는다.
+    ~~~java
+    public class Point{
+        private final int x;
+        private final int y;
+        
+        public point(int x, int y){
+            this.x = x;
+            this.y= y;
+            
+        }
+        
+        @Override public boolean equals(Object o){
+            if (!(o instanceof Point))
+                return false;
+            Point p = (Point) o;
+            return p.x == x && p.y == y;
+            
+        }
+
+    }
+
+    public class ColorPoint extends Point{
+        private final Color color;
+        
+        pulbic ColorPoint(int x, int y, Color color){
+            super(x,y);
+            this.color = color;
+        }
+        
+        @Overrid public boolean equals(Object o){
+            if(!(o instanceof Point))
+                return false;
+            if(!(o instanceof ColorPoint))
+                rturn false;
+                
+            return super.eqauls(o) && ((ColorPoint) o).color == color;
+            
+        }
+    }
+
+    @Test
+    @DisplayName("equals 가 추이성을 유지하는 지 확인한다.")
+    public fun test() {
+        ColorPoint p1 = new ColorPoint(1,2,COLOR.RED);
+        Point p2 = new Point(1,2);
+        ColorPoint p3 = new ColorPoint(1,2,COLOR.BLUE);
+
+        p1.equals(p2); // true
+        p2.equals(p3); // true
+        p1.equals(p3); // false - 추이성 위반!
+    }
+    ~~~
+    ~~~java
+    public class ColorPoint{
+        private final Point point;
+        private Color color;
+        
+        public ColorPoint(int x, int y, Color color){
+            Point = new Point(x,y);
+            this.color = Objects.requireNonNull(color);
+        }
+        
+        public Point asPoint(){
+            return point;
+        }
+        
+        @Override
+        public boolean equals(Object o){
+            if(!(o instanceof ColorPoint)
+                return false;
+            ColorPoint cp = (ColorPoint) o;
+            return cp.point.equals(point) && cp.color.equals(color);
+            
+            
+        }
+    }
+    @Test
+    @DisplayName("equals 가 추이성을 유지하는 지 확인한다.")
+    public fun test() {
+        ColorPoint p1 = new ColorPoint(1,2,COLOR.RED);
+        Point p2 = new Point(1,2);
+        ColorPoint p3 = new ColorPoint(1,2,COLOR.BLUE);
+
+        p1.asPoint().equals(p2); // true
+        p2.equals(p3.asPoint()); // true
+        p1.equals(p3); // true
+    }
+    ~~~
+    > 상위 클래스를 직접 인스턴스로 만드는게 불가능하다면 문제가 되지 않는다. ex)추상클래스
+    ~~~java
+    abstract class Point{
+        private int x;
+        private int y;
+
+        protected Point() {}
+        
+        @Override public boolean equals(Object o){
+            if (!(o instanceof Point))
+                return false;
+            Point p = (Point) o;
+            return p.x == x && p.y == y;
+        }
+
+    }
+
+    @Test
+    @DisplayName("equals 가 추이성을 유지하는 지 확인한다.")
+    public fun test() {
+        ColorPoint p1 = new ColorPoint(1,2,COLOR.RED);
+        Point p2 = new Point(1,2); // 예외 발생!
+        ColorPoint p3 = new ColorPoint(1,2,COLOR.BLUE);
+    }
+    ~~~
+
 * **일관성(consistency)** : null이 아닌 모든 참조 x,y에 대해 x.equals(y)를 반복해서 호출하면 항상 true를 반환하거나 항상 false를 반환한다
 * **null-아님** : null아닌 모든 참조 x에 대해, x.equals(null)은 false다
 
@@ -78,4 +226,14 @@ class App {
     }
     ~~~
 3. 필드들을 비교할 때, 비교하는 비용이 싼 필드들을 먼저 비교하자(성능 고려).
-4. `equals`를 재정의할 땐 `hashcode`도 반드시 재정의하자.
+4. Intellij IDE 자동완성 사용 시 주의사항
+~~~java
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        // getClass() 매서드를 이용할 경우 리스코프 치환 원칙을 위배한다!
+        if (o == null || getClass() != o.getClass()) return false;
+        App app = (App) o;
+        return Objects.equals(var1, app.var1) && Objects.equals(var2, app.var2);
+    }
+~~~
