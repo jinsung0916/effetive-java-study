@@ -93,14 +93,14 @@
             this.color = color;
         }
         
-        @Overrid public boolean equals(Object o){
+        @Overrid 
+        public boolean equals(Object o){
             if(!(o instanceof Point))
                 return false;
             if(!(o instanceof ColorPoint))
                 rturn false;
                 
             return super.eqauls(o) && ((ColorPoint) o).color == color;
-            
         }
     }
 
@@ -116,6 +116,7 @@
         p1.equals(p3); // false - 추이성 위반!
     }
     ~~~
+    > 합성을 활용하여 문제를 해결할 수 있다.
     ~~~java
     public class ColorPoint{
         private final Point point;
@@ -136,8 +137,6 @@
                 return false;
             ColorPoint cp = (ColorPoint) o;
             return cp.point.equals(point) && cp.color.equals(color);
-            
-            
         }
     }
     @Test
