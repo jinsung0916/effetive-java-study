@@ -91,8 +91,7 @@ class FileInputStream extends InputStream {
             if (closed) {
                 return;
             }
-            closed = true;    두 번째 예외가 첫 번째 예외를 완전히 집어삼켜 버린다.
-    그러면 스택 추적 내역에 첫 번째 예외에 관한 정보는 남지 않게 되어, 실제 시스템에서의 디버깅을 어렵게 한다.
+            closed = true;
         }
 
         FileChannel fc = channel;
