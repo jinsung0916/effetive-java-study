@@ -71,9 +71,7 @@ enum Shape {
         } 
     };
 
-    public abstract double area(Figure figure) {
-
-    }
+    public abstract double area(Figure figure);
 }
 
 class Figure {
