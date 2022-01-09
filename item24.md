@@ -5,6 +5,8 @@
 
 ### **중첩 클래스 패턴 4가지**
 1. 정적 멤버 클래스
+    * 해당 클래스는 다른 클래스 안에 선언되고, 바깥 클래스의 private 멤버에도 접근할 수 있다는 점을 제외하고는 일반 클래스와 동일하다.
+
     > 바깥 클래스가 표현하는 객체의 한 부분(구성요소)을 나타낼 때 쓴다.
     ~~~java
     public interface Map<K, V> {
@@ -41,6 +43,8 @@
     }
     ~~~
 2. 비정적 멤버 클래스
+    * 비정적 멤버 클래스의 경우 바깥 클래스의 인스턴스와 암묵적으로 연결된다. 이로 인해, 비정적 멤버 클래스의 인스턴스 메소드에서 this를 통해 외부 클래스의 메소드를 호출하거나 외부 클래스를 참조할 수 있다.
+
     > 비정적 멤버 클래스는 어뎁터를 정의할 때 자주 쓰인다.
     ~~~java
     public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V>
@@ -78,6 +82,8 @@
     }
     ~~~
 3. 익명 클래스
+    * 익명 클래스는 이름이 없는 클래스이고 외부 클래스의 멤버 클래스도 아니다. 사용되는 시점에서 선언과 동시에 인스턴스가 만들어진다. 또한, 익명 클래스가 상위 타입(자기 자신 혹은 부모)에 상속한 멤버 외에는 호출할 수가 없다.
+
     ~~~java
     public static void main(String[] args) {
         List<String> words = Arrays.asList("kim", "taeng", "mad", "play");
@@ -99,6 +105,8 @@
     ~~~
      (출처: https://madplay.github.io/post/prefer-lambdas-to-anonymous-classes)
 4. 지역 클래스
+    * 지역 클래스는 네 가지 중첩 클래스 중 가장 드물게 사용되고 있다.
+    * 지역 클래스의 경우 지역 변수를 선언할 수 있는 곳이라면 어디든 선언이 가능하고 유효 범위(메소드 종료 시 메모리에 사라짐)도 지역 변수와 동일하다.
     ~~~java
     public class LocalExample {
         private int number;
