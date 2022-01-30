@@ -5,85 +5,96 @@
 1.  옵셔널을 사용하는 이유 - 옵셔널은 검사 예외와 취지가 비슷하다.
   
     * 검사 예외를 사용하는 예
-    ~~~java
-    package com.java.effective.item55;
+        ~~~java
+        package com.java.effective.item55;
 
-    import java.util.Collection;
-    import java.util.Objects;
-    import java.util.Optional;
+        import java.util.Collection;
+        import java.util.Objects;
+        import java.util.Optional;
 
-    public class Main {
-        public static <E extends Comparable<E>> E max(Collection<E> c) {
-            if (c.isEmpty()) {
-                throw new IllegalArgumentException();
-            }
-
-            E result = null;
-
-            for (E e : c) {
-                if (result == null || e.compareTo(result) > 0) {
-                    result = Objects.requireNonNull(e);
+        public class Main {
+            public static <E extends Comparable<E>> E max(Collection<E> c) {
+                if (c.isEmpty()) {
+                    throw new IllegalArgumentException();
                 }
+
+                E result = null;
+
+                for (E e : c) {
+                    if (result == null || e.compareTo(result) > 0) {
+                        result = Objects.requireNonNull(e);
+                    }
+                }
+                return result;
             }
-            return result;
         }
-    }
-    ~~~
+        ~~~
     * 옵셔널을 사용하는 예
-    ~~~java
-    package com.java.effective.item55;
+        ~~~java
+        package com.java.effective.item55;
 
-    import java.util.Collection;
-    import java.util.Objects;
-    import java.util.Optional;
+        import java.util.Collection;
+        import java.util.Objects;
+        import java.util.Optional;
 
-    public class Main {
-        public static <E extends Comparable<E>> Optional<E> maxOptional(Collection<E> c) {
-            if (c.isEmpty()) {
-                return Optional.empty();
-            }
-
-            E result = null;
-
-            for (E e : c) {
-                if (result == null || e.compareTo(result) > 0) {
-                    result = Objects.requireNonNull(e);
+        public class Main {
+            public static <E extends Comparable<E>> Optional<E> maxOptional(Collection<E> c) {
+                if (c.isEmpty()) {
+                    return Optional.empty();
                 }
-            }
-            return Optional.of(result);
-            // return Optional.ofNullable(result);
-        }
 
-    }
-    ~~~
+                E result = null;
+
+                for (E e : c) {
+                    if (result == null || e.compareTo(result) > 0) {
+                        result = Objects.requireNonNull(e);
+                    }
+                }
+                return Optional.of(result);
+                // return Optional.ofNullable(result);
+            }
+
+        }
+        ~~~
 
 2. 옵셔널을 사용하는 방법
     * 기본값 설정
-    ~~~java
-    String lastWordInLexicon = max(words).orElse("단어 없음...");
-    ~~~
+        ~~~java
+        String lastWordInLexicon = max(words).orElse("단어 없음...");
+        ~~~
     * 원하는 예외 던지기
-    ~~~java
-    Toy myToy = max(toys).orElseThrow(TemperTantrumException::new);
-    ~~~
+        ~~~java
+        Toy myToy = max(toys).orElseThrow(TemperTantrumException::new);
+        ~~~
     * 값이 있다고 가정하고 꺼내기 
-    ~~~java
-    Element lastNobleGas = max(Elements.NOBLE_GASES).get();
-    ~~~
+        ~~~java
+        Element lastNobleGas = max(Elements.NOBLE_GASES).get();
+        ~~~
     * Supplier<T>를 인수로 받는 orElseGet을 사용하여 값 초기 설정 비용을 낮출 수 있다.
-    ~~~java
-    String lastWordInLexicon = max(words).orElseGet(() -> "");
-    ~~~ 
+        ~~~java
+        String lastWordInLexicon = max(words).orElseGet(() -> "");
+        ~~~ 
     * isPresent는 다른 메소드로 대체될 수 있으니 신중히 사용하라.
+        * isPresent
+            ~~~java
+            if(optional.isPresent()) {
+                // do something
+            } 
+            ~~~  
         * filter, map, flatmap, ifPresent
-    ~~~java
-    streamOfOptionals
-        .filter(Optional::ispresent)
-        .map(Optional::get)
-    
-    streamOfOptional
-        .flatMap(optional::stream)
-    ~~~
+            ~~~java
+            optional.ifPresent(it -> {
+                // do something
+            });
+            ~~~ 
+            ~~~java
+            streamOfOptionals
+                .filter(Optional::ispresent)
+                .map(Optional::get)
+            
+            streamOfOptional
+                .flatMap(optional::stream)
+            ~~~
 
 3. 옵셔널 반환 시 주의 사항
     * 옵셔널을 반환하는 메소드에서는 절대 null을 반환하지 말자.
